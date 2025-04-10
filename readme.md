@@ -1,6 +1,3 @@
----
-
-```markdown
 # 📄 RAG Preprocessing Toolkit
 
 This project provides a robust set of preprocessing tools designed to enhance **Retrieval-Augmented Generation (RAG)** pipelines. It supports chunk enrichment, context summarization, title extraction, keyword extraction, question generation, entity extraction, and document classification.
@@ -94,8 +91,5 @@ MIT License
 ## 👨‍💻 Maintainer
 
 **Talha** – [GitHub](https://github.com/) | [LinkedIn](https://linkedin.com/)
-```
 
 ---
-
-Let me know if you'd like a matching `requirements.txt` or a GitHub Actions deployment setup!
