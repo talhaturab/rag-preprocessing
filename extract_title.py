@@ -76,7 +76,7 @@ def extract_title_one_shot(documents, max_nodes=3):
     
     prompt = DEFAULT_TITLE_NODE_TEMPLATE.format(context_str=full_text)
     response = ollama.chat(
-        model='gemma3:1b',
+        model='qwen2.5:0.5b',
         messages=[{'role': 'user', 'content': prompt}],
         format=Title.model_json_schema(),
     )
@@ -85,6 +85,8 @@ def extract_title_one_shot(documents, max_nodes=3):
 
 def extract_title(documents):
     # Extract the document title using the simple functions
+    if len(documents) >= 3:
+        documents = documents[:3]
     documents = [doc.page_content for doc in documents]
     start_time = time.perf_counter()
     title = extract_title_one_shot(documents)

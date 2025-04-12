@@ -14,9 +14,6 @@ from entity_extraction import extract_entities
 from doc_type_extraction import classify_document
 
 def load_documents(pdf_path):
-    # Specify the path to your research paper PDF
-    pdf_path = "/Users/rimshatalha/Documents/toptal/2409.11974v1.pdf"
-
     # Load the PDF (each page is returned as a Document)
     loader = PyPDFLoader(pdf_path)
     documents = loader.load()

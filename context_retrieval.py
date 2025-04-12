@@ -80,12 +80,12 @@ def get_summarized_context_ollama(document_content, chunk_content):
     """
     start_time = time.perf_counter()
     response = ollama.chat(
-        model='gemma3:1b',
+        model='qwen2.5:0.5b',
         messages=[{'role': 'user', 'content': formatted_prompt}],
     )
     end_time = time.perf_counter()
     
-    print(f"Execution time: {end_time - start_time:.6f} seconds")
+    print(f"Execution time: {end_time - start_time:.6f} seconds, Tokens: {len(formatted_prompt)}")
     return response['message']['content']
 
 def context_retrieval_ollama(chunks, documents):

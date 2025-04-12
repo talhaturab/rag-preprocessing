@@ -38,16 +38,40 @@ def enrich_pdf_chunk(chunk, chunk_index, total_chunks, doc_id_mapping):
 
 def process_chunks(chunks):
     total_chunks = len(chunks)
-    enriched_chunks = []
+    context_headers = []
 
     # Mapping from source file path to a unique document id.
     doc_id_mapping = {}
     
     for index, chunk in enumerate(chunks):
-        enriched_text = enrich_pdf_chunk(chunk, index, total_chunks, doc_id_mapping)
-        enriched_chunks.append(enriched_text)
+        # Generate the context header without appending to the original object
+        page = chunk.metadata.get('page')
+        page_label = chunk.metadata.get('page_label')
+        
+        # Generate or retrieve a unique document ID for the source PDF.
+        source = chunk.metadata.get('source')
+        if source not in doc_id_mapping:
+            doc_id_mapping[source] = str(uuid.uuid4())
+        doc_id = doc_id_mapping[source]
+        
+        # Build positional tag - use page_label if available, otherwise fall back to page number.
+        if page_label:
+            positional_tag = f"Page: {page_label}"
+        elif page is not None:
+            positional_tag = f"Page: {page}"
+        else:
+            positional_tag = "Page: N/A"
+        
+        # Create chunk position indicator (e.g., "Chunk 2 of 14")
+        chunk_position = f"Chunk: {index + 1} of {total_chunks}"
+        
+        # Construct the overall context header
+        context_header = f"DocID: {doc_id} | {chunk_position} | {positional_tag}"
+        
+        # Append the context header to the array
+        context_headers.append(context_header)
     
-    return enriched_chunks
+    return context_headers
 
 def evaluate_summary(context, reference_summary, model_summary):
     class EvaluationResult(BaseModel):

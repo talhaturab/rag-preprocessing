@@ -2,6 +2,7 @@ import ollama
 import time
 from sklearn.feature_extraction.text import TfidfVectorizer
 from keybert import KeyBERT
+import yake
 
 # --- Configurable Prompt Template ---
 DEFAULT_KEYWORD_EXTRACT_TEMPLATE = """\
@@ -30,12 +31,17 @@ def extract_keywords_ollama(doc_text, num_keywords: int = 5) -> list[dict]:
     return keywords
 
 def extract_keywords_tfidf(text: str, top_n=5) -> list[str]:
+    start_time = time.perf_counter()
     vectorizer = TfidfVectorizer(stop_words='english')
     X = vectorizer.fit_transform([text])
     feature_names = vectorizer.get_feature_names_out()
     row = X[0].toarray()[0]
     top_indices = row.argsort()[-top_n:][::-1]
-    return [feature_names[i] for i in top_indices]
+    end_time = time.perf_counter()
+    print(f"Execution time: {end_time - start_time:.6f} seconds")
+    kws = [feature_names[i] for i in top_indices]
+    print(kws)
+    return kws
 
 def extract_keywords_keybert(text: str, top_n=5) -> list[str]:
     kw_model = KeyBERT('all-MiniLM-L6-v2')
@@ -44,3 +50,13 @@ def extract_keywords_keybert(text: str, top_n=5) -> list[str]:
     end_time = time.perf_counter()
     print(f"Execution time: {end_time - start_time:.6f} seconds")
     return [kw for kw, _ in keywords]
+
+
+def extract_keywords_yake(text: str) -> list[str]:
+    kw_extractor = yake.KeywordExtractor(top=5, lan="en")
+    start_time = time.perf_counter()
+    keywords = kw_extractor.extract_keywords(text)
+    end_time = time.perf_counter()
+    print(f"Execution time: {end_time - start_time:.6f} seconds")
+    return [kw for kw, _ in keywords]
+
